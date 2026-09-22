@@ -1,90 +1,50 @@
 # Weather Time Series Analysis and Forecasting
 
-This repository contains the code and report for the Weather Time Series Analysis and Forecasting project using the Max Planck Institute dataset.
+Course project (CSC 6850 Machine Learning, GSU) on the Max Planck Institute **Jena** weather station series: analyze and forecast temperature from 10-minute meteorological readings.
 
-## Repository
-
-https://github.com/hemanth1233333/weather-forecasting
-
-## Usage
-
-You can run the code in three different environments:
-1. **Locally on your machine** (Jupyter Notebook)  
-2. **Google Colab**  
-3. **As a standalone Python script** (optional)
+**Display title (locked):** Weather Time Series Analysis and Forecasting  
+**Team:** Hemanth Kumar Mulluri, Sai Kethan Bharadwaj Kanithi, Vignesh Ajith Nair, Murali Krishna Maddineni
 
 ---
 
-### 1. Running Locally (Jupyter Notebook)
+## Problem
 
-1. **Clone the repository**  
-   ```bash
-   git clone https://github.com/hemanth1233333/weather-forecasting.git
-   cd weather-forecasting
-   ```
+High-resolution weather series are noisy and seasonal. A next-step temperature forecast needs a fair comparison across tree ensembles and sequence models — not a single unchallenged network.
 
-2. **Set up Python environment**  
-   - *(Optional)* Create and activate a virtual environment:  
-     ```bash
-     python3 -m venv venv
-     source venv/bin/activate      # On Windows: venv\Scripts\activate
-     ```  
-   - Install dependencies:  
-     ```bash
-     pip install -r requirements.txt
-     ```  
-     If `requirements.txt` is not provided, install manually:  
-     ```bash
-     pip install pandas numpy matplotlib seaborn scikit-learn xgboost tensorflow jupyter
-     ```
+## Build
 
-3. **Launch Jupyter Notebook**  
-   ```bash
-   jupyter notebook
-   ```  
-4. Open `M.L_PROJECT_GROUP8_CODE.ipynb` and run all cells.
+- Clean / interpolate missing values, drop unit clutter from column names, MinMax scale  
+- Models compared in the enrolled run: **XGBoost**, **MLP**, **LSTM**, **GRU**  
+- This repo ships a **lightweight reproducible eval** (`run_eval.py`) on bundled sample windows so strangers can run without downloading the full Jena dump or TensorFlow
 
----
-
-### 2. Running in Google Colab
-
-1. Go to [Google Colab](https://colab.research.google.com).  
-2. Click **File → Open notebook → GitHub**.  
-3. Enter the repository URL:  
-   ```
-   https://github.com/hemanth1233333/weather-forecasting
-   ```  
-4. Select `M.L_PROJECT_GROUP8_CODE.ipynb`.  
-5. Add a cell at the top to install dependencies:  
-   ```python
-   !pip install pandas numpy matplotlib seaborn scikit-learn xgboost tensorflow
-   ```  
-6. Run all cells.
-
----
-
-### 3. Running as a Python Script (Optional)
-
-1. Convert the notebook to a `.py` script:  
-   ```bash
-   jupyter nbconvert --to script M.L_PROJECT_GROUP8_CODE.ipynb
-   ```  
-2. Run the generated script:  
-   ```bash
-   python M.L_PROJECT_GROUP8_CODE.py
-   ```
-
----
-
-## Generating `requirements.txt`
-
-If you install new packages or update versions, capture all dependencies with:
-```bash
-pip freeze > requirements.txt
+```
+data/sample_jena_windows.csv   # small reproducible slice
+run_eval.py                    # sklearn comparison + printed table
+M.L_PROJECT_GROUP8_CODE.ipynb  # full course notebook
 ```
 
----
+## Proof — course report (enrolled TensorFlow / XGBoost run)
 
-## Contact
+| Model   | Test RMSE (°C) | Test MAE (°C) | Notes                          |
+|---------|----------------|---------------|--------------------------------|
+| XGBoost | 1.35           | 1.164         | Highest error among models     |
+| MLP     | 0.329          | 0.2445        | Competitive                    |
+| LSTM    | 0.341          | 0.290         | Captures trends                |
+| **GRU** | **0.171**      | **0.127**     | Best overall on the course set |
 
-For questions or issues, reach out to **Hemanth Kumar Mulluri** at <hmulluri1@student.gsu.edu>.
+Key finding from the report: RNNs (especially GRU) beat tree boosting on transient events for this setup.
+
+## Quick start
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+python -m pytest -q
+python run_eval.py
+```
+
+`run_eval.py` prints RMSE/MAE on the bundled sample. Those numbers will **not** match the course table above (different data scale / models); the table is the enrolled proof.
+
+## Honesty
+
+Group coursework. Metrics in the table are from the submitted project report — not invented. Notebook may reference training history; prefer `run_eval.py` for a stranger-runnable path.
