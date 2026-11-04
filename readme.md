@@ -32,7 +32,7 @@ M.L_PROJECT_GROUP8_CODE.ipynb  # full course notebook
 | LSTM    | 0.341          | 0.290         | Captures trends                |
 | **GRU** | **0.171**      | **0.127**     | Best overall on the course set |
 
-Key finding from the report: RNNs (especially GRU) beat tree boosting on transient events for this setup.
+Evaluation limitation: the notebook fits MinMaxScaler before the chronological train/test split, then inverse-transforms temperatures for RMSE/MAE. The table preserves historical report results in temperature units; it is not a clean train-only-preprocessing benchmark. The sample evaluator uses different data/models and does not reproduce or validate these figures.
 
 ## Quick start
 
